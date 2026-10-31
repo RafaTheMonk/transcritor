@@ -1,0 +1,39 @@
+name: Relato de problema
+description: Algo não funcionou como esperado
+labels: [problema]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        As issues são públicas. Não anexe áudio, vídeo ou transcrição com conteúdo privado.
+  - type: textarea
+    id: oque
+    attributes:
+      label: O que aconteceu?
+      description: O que você fez, o que esperava e o que apareceu.
+    validations:
+      required: true
+  - type: input
+    id: sistema
+    attributes:
+      label: Sistema
+      placeholder: Ubuntu 24.04, Fedora 42, CachyOS...
+    validations:
+      required: true
+  - type: dropdown
+    id: placa
+    attributes:
+      label: Placa de vídeo
+      options:
+        - NVIDIA
+        - AMD
+        - Intel
+        - Não sei
+    validations:
+      required: true
+  - type: textarea
+    id: mensagem
+    attributes:
+      label: Mensagem de erro
+      description: Copie a mensagem da janela ou do terminal. Quem usa o terminal pode rodar de novo com TRANSCRITOR_DEBUG=1 para ter mais detalhes.
+      render: text
