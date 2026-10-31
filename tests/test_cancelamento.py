@@ -156,7 +156,7 @@ def test_sinal_preso_em_codigo_nativo_forca_a_saida():
         "print('pronto', flush=True)\n"
         "hashlib.pbkdf2_hmac('sha256', b'x', b'y', 2_000_000_000)\n"
     )
-    p = subprocess.Popen([sys.executable, "-P", "-c", codigo], stdout=subprocess.PIPE, text=True, env=ENV)
+    p = subprocess.Popen([sys.executable, "-c", codigo], stdout=subprocess.PIPE, text=True, env=ENV)
     assert p.stdout.readline().strip() == "pronto"
     p.send_signal(signal.SIGTERM)
     t0 = time.monotonic()
@@ -177,5 +177,5 @@ def test_sinal_com_a_trava_na_mao_nao_trava_o_processo():
         "except c.Cancelado:\n"
         "    print('cancelado', flush=True)\n"
     )
-    r = subprocess.run([sys.executable, "-P", "-c", codigo], capture_output=True, text=True, env=ENV, timeout=10)
+    r = subprocess.run([sys.executable, "-c", codigo], capture_output=True, text=True, env=ENV, timeout=10)
     assert r.stdout.strip() == "cancelado"

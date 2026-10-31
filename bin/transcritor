@@ -12,6 +12,6 @@ if [ ! -x "$PY" ]; then
     exit 1
 fi
 
-export PYTHONPATH="$RAIZ${PYTHONPATH:+:$PYTHONPATH}"
-
-exec "$PY" -P -m transcritor.gui "$@"
+# Troca a pasta atual (sys.path[0]) pela do projeto, para um .py solto na pasta de onde se
+# roda nunca ser importado. Vale para qualquer Python: a opção -P só existe a partir do 3.11.
+exec "$PY" -c 'import sys; sys.path[0] = sys.argv.pop(1); from transcritor.gui import main; sys.exit(main())' "$RAIZ" "$@"

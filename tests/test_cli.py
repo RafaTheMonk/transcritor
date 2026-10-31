@@ -68,7 +68,7 @@ def test_saida_humana_em_portugues(midias, tmp_path):
 def test_sigterm_cancela_com_130_e_sem_sobras(midias, tmp_path):
     saida = tmp_path / "o"
     p = subprocess.Popen(
-        [sys.executable, "-P", "-c", SCRIPT_LENTO, str(midias["video_aac"]), "--json-eventos", "--saida", str(saida)],
+        [sys.executable, "-c", SCRIPT_LENTO, str(midias["video_aac"]), "--json-eventos", "--saida", str(saida)],
         stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, env=ENV,
     )
     vistos = []
@@ -108,3 +108,23 @@ def test_saida_humana_com_nome_que_nao_e_utf8(midias, tmp_path):
 
 def test_lancador_da_janela_nao_define_ld_library_path():
     assert "LD_LIBRARY_PATH=" not in (RAIZ / "bin" / "transcritor").read_text()
+
+
+def test_py_solto_na_pasta_atual_nao_e_importado(tmp_path):
+    marca = tmp_path / "importado"
+    (tmp_path / "json.py").write_text(f"open({str(marca)!r}, 'w').close()\nraise SystemExit(99)\n")
+    env = {k: v for k, v in os.environ.items() if k != "PYTHONPATH"}
+    r = subprocess.run([str(LANCADOR), "--help"], cwd=tmp_path, env=env, capture_output=True, text=True, timeout=60)
+    assert r.returncode == 0 and "transcrever" in r.stdout and not marca.exists()
+
+    janela = subprocess.Popen(
+        [str(RAIZ / "bin" / "transcritor")], cwd=tmp_path, env={**env, "QT_QPA_PLATFORM": "offscreen"},
+        stdout=subprocess.DEVNULL, stderr=subprocess.PIPE,
+    )
+    try:
+        time.sleep(3)
+        assert janela.poll() is None, janela.stderr.read()
+        assert not marca.exists()
+    finally:
+        janela.terminate()
+        janela.wait(timeout=10)
