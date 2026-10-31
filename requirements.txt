@@ -1,0 +1,4 @@
+faster-whisper==1.2.1
+ctranslate2==4.8.4
+av==16.1.0
+PySide6-Essentials==6.12.0
