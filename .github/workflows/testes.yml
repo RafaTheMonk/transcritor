@@ -1,0 +1,43 @@
+name: Testes
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    # Toda segunda-feira, para pegar dependência nova que quebre a instalação.
+    - cron: "0 9 * * 1"
+
+permissions:
+  contents: read
+
+jobs:
+  testes:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.10", "3.12", "3.14"]
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.python }}
+
+      - name: Dependências do sistema
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg libegl1 libxkbcommon0 libdbus-1-3 libglib2.0-0 fonts-dejavu-core
+
+      - name: Instalação, como no README
+        run: bash instalar.sh --dev --sem-gpu
+
+      - name: Testes
+        run: .venv/bin/python -m pytest
+
+      - name: Transcrição real do áudio de exemplo
+        run: |
+          bin/transcrever exemplos/exemplo.mp3 --modelo small --dispositivo cpu --saida "$RUNNER_TEMP/saida"
+          cat "$RUNNER_TEMP/saida/exemplo/exemplo.txt"
+          grep -qi "transcritor" "$RUNNER_TEMP/saida/exemplo/exemplo.txt"
