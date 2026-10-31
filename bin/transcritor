@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# Lancador da interface grafica do Transcritor. A janela nao usa a GPU: quem define
+# LD_LIBRARY_PATH e so bin/transcrever, que ela roda como subprocesso.
+set -euo pipefail
+
+ARQ="$(readlink -f "${BASH_SOURCE[0]}")"
+RAIZ="$(dirname "$(dirname "$ARQ")")"
+PY="$RAIZ/.venv/bin/python"
+
+if [ ! -x "$PY" ]; then
+    echo "ERRO: ambiente não encontrado em $RAIZ/.venv. Rode $RAIZ/instalar.sh" >&2
+    exit 1
+fi
+
+export PYTHONPATH="$RAIZ${PYTHONPATH:+:$PYTHONPATH}"
+
+exec "$PY" -P -m transcritor.gui "$@"
