@@ -30,13 +30,6 @@ Gravou uma reunião, uma aula ou uma entrevista e precisa do texto? Solte o arqu
 - **Funciona sem placa de vídeo:** com placa NVIDIA fica bem mais rápido, mas ela não é obrigatória.
 - **Em português por padrão:** também reconhece inglês e espanhol e pode detectar o idioma sozinho.
 
-```mermaid
-flowchart LR
-    V[Vídeo] -->|separa o áudio| A[Áudio]
-    M[Áudio] --> A
-    A -->|Whisper, no seu computador| T[Texto e legendas]
-```
-
 **Quanto tempo leva?** Um vídeo de cerca de 5 minutos, com as opções padrão:
 
 | Computador usado no teste | Tempo |
@@ -69,25 +62,35 @@ Para colar um comando no terminal, use `Ctrl` + `Shift` + `V` e aperte `Enter`. 
 
 ### 2. Instale o que o sistema precisa
 
-Copie só a linha da sua distribuição:
+Use só o comando da sua distribuição. Se ele perguntar se quer continuar, digite `s` ou `y`, o que a pergunta mostrar, e aperte `Enter`.
+
+**Ubuntu, Mint, Debian, Pop!_OS**
 
 ```bash
-# Ubuntu, Mint, Debian, Pop!_OS
 sudo apt install git ffmpeg python3-venv libxcb-cursor0
+```
 
-# Fedora
+**Fedora**
+
+```bash
 sudo dnf install git ffmpeg-free python3
+```
 
-# Arch, CachyOS, Manjaro
+**Arch, CachyOS, Manjaro**
+
+```bash
 sudo pacman -S --needed git ffmpeg python
+```
 
-# openSUSE
+**openSUSE**
+
+```bash
 sudo zypper install git ffmpeg python3
 ```
 
 ### 3. Baixe e instale o Transcritor
 
-Cole estes comandos, um de cada vez:
+Copie os três comandos de uma vez, cole no terminal e aperte `Enter`:
 
 ```bash
 git clone https://github.com/RafaTheMonk/transcritor.git ~/transcritor
